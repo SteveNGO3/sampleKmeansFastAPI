@@ -1,0 +1,36 @@
+{
+  "family": "techc-task-bioml",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "1024",
+  "memory": "3072",
+  "executionRoleArn": "arn:aws:iam::872515266027:role/ecs-task-bedrock-dynamo-role",
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  },
+  "containerDefinitions": [
+    {
+      "name": "techc-bioml-conteneur",
+      "image": "872515266027.dkr.ecr.us-east-1.amazonaws.com/techc-bioml-test",
+      "essential": true,
+      "cpu": 0,
+      "portMappings": [
+        {
+          "containerPort": 8000,
+          "hostPort": 8000,
+          "protocol": "tcp",
+          "appProtocol": "http",
+          "name": "techc-bioml-conteneur-8000-tcp"
+        }
+      ],
+      "environment": [],
+      "environmentFiles": [],
+      "mountPoints": [],
+      "systemControls": [],
+      "ulimits": [],
+      "volumesFrom": []
+    }
+  ],
+  "volumes": []
+}
