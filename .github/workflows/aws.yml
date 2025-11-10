@@ -33,9 +33,9 @@ on:
 env:
   AWS_REGION: us-east-1                   # set this to your preferred AWS region, e.g. us-west-1
   ECR_REPOSITORY: techc-bioml-test           # set this to your Amazon ECR repository name
-  ECS_SERVICE: techc-task-bioml-service-j4j0wde0      # set this to your Amazon ECS service name
+  ECS_SERVICE: techc-task-bioml-service-rytfd7f5      # set this to your Amazon ECS service name
   ECS_CLUSTER: techc-bioml-ecs                 # set this to your Amazon ECS cluster name
-  ECS_TASK_DEFINITION: aws/task-definition.json   # set this to the path to your Amazon ECS task definition
+  ECS_TASK_DEFINITION: techc-task-bioml   # set this to the path to your Amazon ECS task definition
                                                # file, e.g. .aws/task-definition.json
   CONTAINER_NAME: techc-bioml-conteneur           # set this to the name of the container in the
                                                # containerDefinitions section of your task definition
@@ -77,15 +77,23 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-    - name: Fill in the new image ID in the Amazon ECS task definition
+    - name: Retrieve latest task definition from ECS
+      id: fetch-task
+      run: |
+        aws ecs describe-task-definition \
+          --task-definition ${{env.ECS_TASK_DEFINITION}} \
+          --query taskDefinition \
+          > task-definition.json
+
+    - name: Update image in task definition
       id: task-def
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
-        task-definition: ${{ env.ECS_TASK_DEFINITION }}
+        task-definition: task-definition.json
         container-name: ${{ env.CONTAINER_NAME }}
         image: ${{ steps.build-image.outputs.image }}
 
-    - name: Deploy Amazon ECS task definition
+    - name: Deploy updated task definition to ECS
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
         task-definition: ${{ steps.task-def.outputs.task-definition }}
