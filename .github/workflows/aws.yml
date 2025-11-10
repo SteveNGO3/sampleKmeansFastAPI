@@ -82,8 +82,18 @@ jobs:
       run: |
         aws ecs describe-task-definition \
           --task-definition ${{env.ECS_TASK_DEFINITION}} \
-          --query taskDefinition \
-          > task-definition.json
+          --query 'taskDefinition' \
+          > raw-task-definition.json
+        jq 'del(
+          .taskDefinitionArn,
+          .revision,
+          .status,
+          .requiresAttributes,
+          .compatibilities,
+          .registeredAt,
+          .registeredBy,
+          .enableFaultInjection
+        )' raw-task-definition.json > task-definition.json
 
     - name: Update image in task definition
       id: task-def
