@@ -5,8 +5,8 @@ import pandas as pd
 from pydantic import BaseModel
 from typing import List
 import numpy as np
-from . import model
-from . import plot_clusters
+from app import model
+from app.plotter import plot_clusters
 
 app = FastAPI(title="API Clustering avec CSV")
 

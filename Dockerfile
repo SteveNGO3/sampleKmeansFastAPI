@@ -10,7 +10,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the application code
-COPY ./app/ ./app/
+COPY . .
 
 # Ajoute le dossier app au PYTHONPATH pour que les imports fonctionnent
 ENV PYTHONPATH="${PYTHONPATH}:/sampleKmeansFastAPI/app"
