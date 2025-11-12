@@ -1,7 +1,7 @@
 FROM python:3.11-slim
 
 # Set the working directory
-WORKDIR /app
+WORKDIR /sampleKmeansFastAPI
 
 # Copy the requirements file
 COPY requirements.txt .
@@ -10,7 +10,10 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the application code
-COPY ./app ./app
+COPY ./app/ ./app/
+
+# Ajoute le dossier app au PYTHONPATH pour que les imports fonctionnent
+ENV PYTHONPATH="${PYTHONPATH}:/sampleKmeansFastAPI/app"
 
 # Expose the port the app runs on
 EXPOSE 8000
